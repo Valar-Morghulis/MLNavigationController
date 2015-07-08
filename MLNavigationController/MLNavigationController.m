@@ -79,7 +79,43 @@
     _recognizer.enabled = canDragBack;//
     return [super popViewControllerAnimated:animated];
 }
-
+- (NSArray *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if(viewController)
+    {
+        NSArray * viewControllers = self.viewControllers;
+        int index = [viewControllers indexOfObject:viewController];
+        int count = [self.screenShotsList count];
+        if(index < count)
+        {
+            [self.screenShotsList removeObjectsInRange:NSMakeRange(index, count - 1)];
+        }
+    }
+    BOOL canDragBack = TRUE;
+    NSDictionary *dic = [self.screenShotsList lastObject];
+    if(dic)
+    {
+        canDragBack = [[dic objectForKey:@"canDragBack"] boolValue];
+    }
+    _recognizer.enabled = canDragBack;//
+    return [super popToViewController:viewController animated:animated];
+}
+- (NSArray *)popToRootViewControllerAnimated:(BOOL)animated;
+{
+    int count = [self.screenShotsList count];
+    if(count > 1)
+    {
+        [self.screenShotsList removeObjectsInRange:NSMakeRange(1, count - 1)];
+    }
+    BOOL canDragBack = TRUE;
+    NSDictionary *dic = [self.screenShotsList lastObject];
+    if(dic)
+    {
+        canDragBack = [[dic objectForKey:@"canDragBack"] boolValue];
+    }
+    _recognizer.enabled = canDragBack;//
+    return [super popToRootViewControllerAnimated:animated];
+}
 #pragma mark - Utility Methods -
 
 // get the current view screen shot
