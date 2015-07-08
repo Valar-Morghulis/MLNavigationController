@@ -85,17 +85,18 @@
     {
         NSArray * viewControllers = self.viewControllers;
         int index = [viewControllers indexOfObject:viewController];
-        int count = [self.screenShotsList count];
-        if(index < count)
+        int startIndex = index + 1;
+        int lastIndex = [self.screenShotsList count] - 1;
+        if(startIndex <= lastIndex)
         {
-            [self.screenShotsList removeObjectsInRange:NSMakeRange(index, count - index)];
+            [self.screenShotsList removeObjectsInRange:NSMakeRange(startIndex, lastIndex - startIndex + 1)];//含startIndex
         }
     }
     BOOL canDragBack = TRUE;
     NSDictionary *dic = [self.screenShotsList lastObject];
     if(dic)
     {
-        NSLog(@"%@",[dic objectForKey:@"name"]);
+        NSLog(@"current page is %@",[dic objectForKey:@"name"]);
         canDragBack = [[dic objectForKey:@"canDragBack"] boolValue];
     }
     _recognizer.enabled = canDragBack;//
@@ -103,7 +104,13 @@
 }
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated;
 {
-    [self.screenShotsList removeAllObjects];//
+    int index = 0;
+    int startIndex = index + 1;
+    int lastIndex = [self.screenShotsList count] - 1;
+    if(startIndex <= lastIndex)
+    {
+        [self.screenShotsList removeObjectsInRange:NSMakeRange(startIndex, lastIndex - startIndex + 1)];//含startIndex
+    }
     BOOL canDragBack = TRUE;
     NSDictionary *dic = [self.screenShotsList lastObject];
     if(dic)
