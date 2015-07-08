@@ -61,7 +61,7 @@
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     BOOL canDragBack = [viewController canDragBack];
-    [self.screenShotsList addObject:[NSDictionary dictionaryWithObjectsAndKeys:[self capture],@"capture",[NSNumber numberWithBool:canDragBack],@"canDragBack", nil]];
+    [self.screenShotsList addObject:[NSDictionary dictionaryWithObjectsAndKeys:[self capture],@"capture",[NSNumber numberWithBool:canDragBack],@"canDragBack", NSStringFromClass([viewController class]),@"name",nil]];
     _recognizer.enabled = canDragBack;//
     [super pushViewController:viewController animated:animated];
 }
@@ -88,13 +88,14 @@
         int count = [self.screenShotsList count];
         if(index < count)
         {
-            [self.screenShotsList removeObjectsInRange:NSMakeRange(index, count - 1)];
+            [self.screenShotsList removeObjectsInRange:NSMakeRange(index, count - index)];
         }
     }
     BOOL canDragBack = TRUE;
     NSDictionary *dic = [self.screenShotsList lastObject];
     if(dic)
     {
+        NSLog(@"%@",[dic objectForKey:@"name"]);
         canDragBack = [[dic objectForKey:@"canDragBack"] boolValue];
     }
     _recognizer.enabled = canDragBack;//
@@ -102,11 +103,7 @@
 }
 - (NSArray *)popToRootViewControllerAnimated:(BOOL)animated;
 {
-    int count = [self.screenShotsList count];
-    if(count > 1)
-    {
-        [self.screenShotsList removeObjectsInRange:NSMakeRange(1, count - 1)];
-    }
+    [self.screenShotsList removeAllObjects];//
     BOOL canDragBack = TRUE;
     NSDictionary *dic = [self.screenShotsList lastObject];
     if(dic)
